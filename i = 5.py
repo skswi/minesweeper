@@ -12,7 +12,7 @@ class Board:
 
         # let's create the board
         # helper function!
-        self.board = self.make_new_board() # plant the bombs
+        self.board = self.make_new_board() # plant the bombs test I speedy
         self.assign_values_to_board()
 
         # initialize a set to keep track of which locations we've uncovered
