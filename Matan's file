@@ -1,15 +1,45 @@
 import random
-size = 3
-board = [["None" for i in range(size)]for i in range(size)]
-print(board)
-bomb_planted = 0
-num_bombs = 2
-while bomb_planted < num_bombs:
+def name(size):
+    size = 3 # input maybe later
+def make_new_board():
+    board = [[0 for i in range(size)]for i in range(size)]  # [ none , none ,none]
+def bomb_plante(num_bombs):                                      # [ none , none ,X]
+                                                                 # [ none , none ,none]
+    bomb_planted = 0
+    while bomb_planted < num_bombs:
     coords = random.randint(0, size**2-1)
     row = coords // size
     col = coords % size
-    if board[row][col] == "None":
+    if board[row][col] == 0:
         board[row][col] = 'X'
-    bomb_planted = bomb_planted+1
-    print(coords)
-    print(board)
+    bomb_planted+=1
+def assign_values_to_board():
+    for r in range(size):
+        for c in range(size):
+            if board[r][c] == 'X':
+                get_num_neighboring_bomb(r,c)
+def get_num_neighboring_bomb(row, col):
+    TL = (row-1, col-1)
+    TM = (row-1, col)
+    TR = (row-1, col+1)
+
+    L = (row, col-1)
+    R = (row, col+1)
+
+    BL = (row+1, col-1)
+    BM = (row+1, col)
+    BR = (row+1, col+1)
+    list_loc = [TL, TM, TR, L, R, BL, BM, BR]
+    for item in list_loc:
+        if board[item] == 0 and -1 < item < 4:
+            board[item] == 1
+
+
+
+
+
+
+
+
+def get_num_neighboring_bomb(row, col):
+
