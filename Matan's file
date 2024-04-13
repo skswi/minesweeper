@@ -1,1 +1,15 @@
-1.1.1.1.1.101adsfsfs
+import random
+size = 3
+board = [["None" for i in range(size)]for i in range(size)]
+print(board)
+bomb_planted = 0
+num_bombs = 2
+while bomb_planted < num_bombs:
+    coords = random.randint(0, size**2-1)
+    row = coords // size
+    col = coords % size
+    if board[row][col] == "None":
+        board[row][col] = 'X'
+    bomb_planted = bomb_planted+1
+    print(coords)
+    print(board)
