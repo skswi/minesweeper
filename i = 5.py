@@ -18,4 +18,4 @@ else:
                     if(-1<r<size and -1<c<size):
                         if(board[r][c] != 'X'):
                             board[r][c]+=1
-    print(board)
+    print(*board,sep='\n')
