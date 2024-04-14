@@ -1,27 +1,21 @@
 import random
-def name(size):
-    size = 3 # input maybe later
-def make_new_board():
-    board = [[0 for i in range(size)]for i in range(size)] 
-def bomb_plante(num_bombs):                                      
+size = int(input("what size of the board whould you like?"))
+board = [[0 for i in range(size)]for i in range(size)]
+num_bombs = int(input("how much bombs whould you like?"))
+if num_bombs >= size**2:
+  print("wrong input")
+else:
     bomb_planted = 0
     while bomb_planted < num_bombs: 
         coords = random.randint(0, size**2-1)  
         row = coords // size 
         col = coords % size
         if board[row][col] == 0:
-          board[row][col] = 'X'
-          bomb_planted+=1
-def assign_values_to_board():
-    for r in range(size):
-        for c in range(size):
-            if board[r][c] == 'X':
-                get_num_neighboring_bomb(r,c) 
-
-def get_num_neighboring_bomb(row,col):
-            for i in range(2):
-                for r in range(row-1,row+2):
-                    for c in range(col-1,col+2):
-                        if(-1<r<3 and -1<c<3): 
-                            if(board[r][c] != 'X'):
-                                board[r][c]+=1
+            bomb_planted+=1
+            board[row][col] = 'X'
+            for r in range(row-1,row+2):
+                for c in range(col-1,col+2):
+                    if(-1<r<size and -1<c<size):
+                        if(board[r][c] != 'X'):
+                            board[r][c]+=1
+    print(board)
