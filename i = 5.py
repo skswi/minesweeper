@@ -3,7 +3,11 @@ class game:
     def __init__(self,size,num_bombs):
         self.size = int(input("What size whould you like?\n"))
         self.num_bombs = int(input("How many bombs would you like?\n"))
-        self.make_new_board()
+        if self.size >2:
+            self.make_new_board()
+        else:
+            print("size should be at least 2)
+        
       
 
     def make_new_board(self):
