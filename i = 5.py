@@ -1,8 +1,8 @@
 import random
 class game:
     def __init__(self,size,num_bombs):
-        self.size = int(input("what size whould you like?\n"))
-        self.num_bombs = int(input("how many bombs would you like?\n"))
+        self.size = int(input("What size whould you like?\n"))
+        self.num_bombs = int(input("How many bombs would you like?\n"))
         self.make_new_board()
       
 
@@ -13,7 +13,7 @@ class game:
 
     def bomb_plant(self):
         if self.num_bombs >= self.size**2:
-            print("wrong input")
+            print("Wrong input")
         else:
             self.bomb_planted = 0
             while self.bomb_planted  <  self.num_bombs: 
