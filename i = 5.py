@@ -12,7 +12,6 @@ class game:
     
 
     def bomb_plant(self):
-        print("the best num of bombs is 1/4 - 1/3 of size**2)
         if self.num_bombs >= self.size**2:
             print("wrong input")
         else:
