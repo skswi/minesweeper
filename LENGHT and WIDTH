@@ -1,0 +1,43 @@
+import random
+class game:
+    def __init__(self):
+        self.Length = int(input("What lenght whould you like?\n"))
+        self.Width = int(input("What width whould you like?\n"))
+        self.num_bombs = int(input("How many bombs would you like?\n"))
+        if self.Length and self.Width > 0:
+            self.make_new_board()
+        else:
+            print("Lenght and Width must be bigger then 0")
+      
+
+    def make_new_board(self):
+        self.board = [[0 for i in range(self.Length)]for i in range(self.Width)] 
+        self.bomb_plant()
+    
+
+    def bomb_plant(self): 
+        if self.num_bombs >= self.Length * self.Width:
+            print("wrong input")
+        else:
+            self.bomb_planted = 0
+            while self.bomb_planted  <  self.num_bombs: 
+                self.coords = random.randint(0, self.Length * self.Width -1)  
+                self.row = self.coords // self.Length 
+                self.col = self.coords % self.Width
+                if self.board[self.row][self.col] == 0:
+                    self.board[self.row][self.col] = 'x'
+                    self.bomb_planted+=1
+                    self.get_num_neighboring_bomb(self.row , self.col)
+                    
+
+
+    def get_num_neighboring_bomb(self,row,col):
+        for r in range(row-1,row+2):
+            for c in range(col-1,col+2):
+                if(-1<r<self.Width and -1<c<self.Length):
+                    if(self.board[r][c] != 'x'):
+                        self.board[r][c]+=1
+        if self.bomb_planted == self.num_bombs:
+            print(*self.board,sep='\n')
+  
+game()
