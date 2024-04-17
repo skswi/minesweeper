@@ -40,5 +40,5 @@ class game:
         if self.bomb_planted == self.num_bombs:
             print(*self.board,sep='\n')
 
-game(3,2)
+game()
  
