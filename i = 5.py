@@ -112,6 +112,7 @@ class game:
                                   self.digstart0(r2,c2)
                                  else:
                                     self.visboard[r2][c2] = self.board[r2][c2]
+                                    self.diged+=1
                                     
         else:
           print("wrong input , not in board")
@@ -128,7 +129,10 @@ class game:
                             self.visboard[r2][c2] = self.board[r2][c2]
                             self.diged = self.diged + 1
                             if self.board[r2][c2]==0:
-                                self.digstart0(r2,c2)
+                                self.digstart0(r2,c2) #?????? I need help down here guys
+                            else:
+                                self.visboard[r2][c2] = self.board[r2][c2]
+                                self.diged+=1
        
 
 
