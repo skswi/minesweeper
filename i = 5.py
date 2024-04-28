@@ -106,24 +106,33 @@ class game:
                         if(-1<r2<self.Width and -1<c2<self.Length):
                            if self.board[r2][c2] != 'x' :
                              if self.visboard[r2][c2] != self.board[r2][c2]:
+                                 self.visboard[r2][c2] = self.board[r2][c2]
                                  self.diged = self.diged + 1
                                  if self.board[r2][c2]==0:
-                                  for r2 in range(r2-1,r2+2):
-                                   for c2 in range(c2-1,c2+2):
-                                     if(-1<r2<self.Width and -1<c2<self.Length):
-                                        if self.board[r2][c2] != 'x' :
-                                          if self.visboard[r2][c2] != self.board[r2][c2]:
-                                           self.visboard[r2][c2] = self.board[r2][c2]
-                                           self.diged = self.diged + 1
+                                  self.digstart0(r2,c2)
+                                 else:
+                                    self.visboard[r2][c2] = self.board[r2][c2]
+                                    
         else:
           print("wrong input , not in board")
           self.input_coords()
     
         print(*self.visboard,sep='\n')
         self.input_coords()
-
+    def digstart0(self,r2,c2):
+       for r2 in range(r2-1,r2+2):
+            for c2 in range(c2-1,c2+2):
+              if(-1<r2<self.Width and -1<c2<self.Length):
+                    if self.board[r2][c2] != 'x' :
+                        if self.visboard[r2][c2] != self.board[r2][c2]:
+                            self.visboard[r2][c2] = self.board[r2][c2]
+                            self.diged = self.diged + 1
+                            if self.board[r2][c2]==0:
+                                self.digstart0(r2,c2)
+       
 
 
 
 game()
+
 
