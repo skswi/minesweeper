@@ -5,7 +5,8 @@ class game:
         self.Length = int(input("What lenght whould you like?\n"))
         self.Width = int(input("What width whould you like?\n"))
         self.num_bombs = int(input("How many bombs would you like?\n"))
-        self.diged = 0
+        self.dug = set()
+        self.visboard = [['?' for i in range(self.Length)]for i in range(self.Width)]
         if self.Length >= 3 and self.Width  >= 3:
             self.make_new_board()
         else:
@@ -13,7 +14,7 @@ class game:
       
 
     def make_new_board(self):
-        self.board = [[0 for i in range(self.Length)]for i in range(self.Width)] 
+        self.board = [[0 for q in range(self.Length)]for i in range(self.Width)] 
         self.bomb_plant()
     
 
@@ -41,73 +42,55 @@ class game:
                         self.board[r][c]+=1
         if self.bomb_planted == self.num_bombs:
             print(*self.board,sep='\n')
-            self.make_visboard()
+            print(*self.visboard,sep='\n')
+            self.input_coords()
+
+
+
     
 
     def input_coords(self):
-        user_input = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: ")) # 0, 3  
-        self.row2, self.col2 = int(user_input[0])-1, int(user_input[-1])-1
-        self.dig(self.row2,self.col2)
+        while len(self.dug) < self.Length * self.Width - self.num_bombs:
+         if len(self.dug) == self.Length * self.Width - self.num_bombs:
+          print("YOU WONNNN ")
+          print(*self.visboard,sep = '\n')
+         user_input = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: ")) # 0, 3  
+         self.row2, self.col2 = int(user_input[0])-1, int(user_input[-1])-1
+         if self.visboard[self.row2][self.row2] != self.board[self.row2][self.col2]:    
+          if(-1<self.row2<self.Width and -1<self.col2<self.Length):
+            self.dig(self.row2, self.col2)
+            print(*self.visboard,sep = '\n')
+ 
+          
+          else:
+            print("wrong coords")
+            self.input_coords
 
-    def make_visboard(self):
-        self.visboard = [['?' for i in range(self.Length)]for i in range(self.Width)]
-        print(*self.visboard,sep = '\n')
-        self.input_coords()
-
-    
-    def dig(self,row2,col2):
-        if(-1<self.row2<self.Width and -1<self.col2<self.Length):
-            if self.board[row2][col2] == 'x':
-                print("gameover")
-                print(*self.board,sep='\n')
-            if self.visboard[row2][col2] != self.board[row2][col2]:   
-                 self.visboard[self.row2][self.col2] = self.board[self.row2][self.col2]
-                 self.diged = self.diged + 1
-                 for r2 in range(self.row2-1,self.row2+2):
-                   for c2 in range(self.col2-1,self.col2+2):
-                       if(-1<r2<self.Width and -1<c2<self.Length):
-                           if self.board[r2][c2] != 'x':
-                             if self.visboard[r2][c2] != self.board[r2][c2]:
-                                 self.visboard[r2][c2] = self.board[r2][c2]
-                                 self.diged = self.diged + 1
-                                 if self.board[r2][c2] == 0:
-                                     self.dig0(r2,c2)
-            if self.diged == self.Length * self.Width - self.num_bombs:       
-                    print(*self.board,sep = '\n')
-                    print("good game!!!!!!")
-            else:
-                    print(*self.visboard,sep = '\n')
-                    self.input_coords()
-
-        else:
-            print("wrong input , not in board")
-            self.input_coords()
-
-        print(*self.visboard,sep='\n')
-        self.input_coords()
+         
 
 
 
-    def dig0(self,r2,c2):                               # IN WORK RIGHT NOW
-       for r2 in range(r2-1,r2+2):
-            for c2 in range(c2-1,c2+2):
-              if(-1<r2<self.Width and -1<c2<self.Length):
-                     if self.board[r2][c2] != 'x' :
-                        if self.visboard[r2][c2] != self.board[r2][c2]:
-                            self.visboard[r2][c2] = self.board[r2][c2]
-                            self.diged = self.diged + 1
-                            if self.board[r2][c2]==0:
-                                self.dig(r2,c2)                   
 
-                                
-                            else:
-                                self.visboard[r2][c2] = self.board[r2][c2]
-                                self.diged+=1
-       
-
-
-
+    def dig(self,row,col):
+        self.dug.add((row, col))
+        self.visboard[row][col] = self.board[row][col]
+        
+        if self.board[row][col] == 'x':
+            print("YOU LOST :( !! ")
+            print(*self.board,sep = '\n')
+            return False
+            
+        elif self.board[row][col] == 0:
+         for r in range(row-1,row+2):
+            for c in range(col-1,col+2):
+              if(-1<r<self.Width and -1<c<self.Length):
+                if (r, c) in self.dug or self.board[r][c] == 'x':
+                    continue 
+                self.visboard[r][c] = self.board[r][c]
+                self.dig(r, c)
 game()
+
+
 
 
 
