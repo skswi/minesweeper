@@ -77,8 +77,6 @@ class mine:
                     running = False 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     row,col = self.get_coords(pygame.mouse.get_pos())
-                    if row >= Length and col>= Width:
-                        continue
                     cover_field[row][col] = 1
             self.draw()
         pygame.quit()
