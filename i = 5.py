@@ -1,10 +1,12 @@
 import random 
 import pygame
+import time 
+
 
 pygame.font.init()
-Length = 15
+Length = 30
 Width = 15
-length_window = 600
+length_window = 1200
 width_window = 600
 num_bombs = 15
 dug = set() 
@@ -12,12 +14,13 @@ blue = (0, 0, 255)
 visboard = [['?' for i in range(Length)]for i in range(Width)]
 cover_field = [[0 for i in range(Length)]for i in range(Width)]
 board = [[0 for q in range(Length)]for i in range(Width)] 
-size = 40
+size = length_window // Length
 NUM_FONT = pygame.font.SysFont('Ariel', 20)
 red = (255, 0, 0)
 pygame.init()
 pygame.display.set_caption(" Minesweeper ") 
 window = pygame.display.set_mode((length_window,width_window))
+window2 = pygame.display.set_mode((length_window,width_window))
 pygame.display.flip()
 white = [255, 255, 255]
 black = (0,0,0)
@@ -70,22 +73,28 @@ class mine:
 
    
     def Window(self):
+        q = 1
         running = True
         while running:  
             for event in pygame.event.get():                                                 
                 if event.type == pygame.QUIT:    
                     running = False 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
                     row,col = self.get_coords(pygame.mouse.get_pos())
-                    cover_field[row][col] = 1
+                    cover_field[row][col] = 1 
+                if q == 1:
+                    self.start_time = time.time()
+                    q+=1
             self.draw()
+
+
         pygame.quit()
 
 
-    def get_coords(self,mouse_pos):
+    def get_coords(self,mouse_pos):  # *
         mx,my = mouse_pos
-        row = int(my//size)
-        col = int(mx//size)
+        row = my//size
+        col = mx//size
         return row,col 
     
     def draw(self):
@@ -94,11 +103,11 @@ class mine:
             for j, value in enumerate(row2):
                 x2 = size * j
                 if cover_field[i][j]==0:
-                    pygame.draw.rect(window , white , (x2,y2,size,size))
-                    pygame.draw.rect(window , black , (x2,y2,size,size),2)
+                    pygame.draw.rect(window2 , white , (x2,y2,size,size))
+                    pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
                 else:
-                    pygame.draw.rect(window , color , (x2,y2,size,size))
-                    pygame.draw.rect(window , black , (x2,y2,size,size),2)
+                    pygame.draw.rect(window2 , color , (x2,y2,size,size))
+                    pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
                     if value == -1:
                         text = NUM_FONT.render(str(value), True , green)
                         center_x = x2 + size // 2
@@ -118,12 +127,29 @@ class mine:
                         window.blit(text, (center_x,center_y))
                         #self.open_zero() + pygame.quit()
 
-                    
+                  
         pygame.display.flip()
-    
+
+
+    def time(self):                                               # after win:
+         current_time = time.time()
+         elapsed_time = int(current_time - self.start_time)
+         minutes = elapsed_time // 60
+         seconds = elapsed_time % 60
+         print(minutes,seconds )
+
 
     #def open_zero(self):
+
+
+
+
+
+
+
+
+
+
 mine()
-
-
+    
 
