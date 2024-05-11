@@ -8,7 +8,7 @@ Length = 30
 Width = 15
 length_window = 1200
 width_window = 600
-num_bombs = 15
+num_bombs = 10
 dug = set() 
 blue = (0, 0, 255)
 visboard = [['?' for i in range(Length)]for i in range(Width)]
@@ -26,18 +26,20 @@ white = [255, 255, 255]
 black = (0,0,0)
 green = (0, 255, 0)
 color = (140,140,140)
+
+
 class mine:
 
     def __init__(self):
+        self.opend= 0
         self.bomb_planted = 0
         while self.bomb_planted  <  num_bombs: 
-            self.coords = random.randint(0, Length * Width -1)       
-            self.row = self.coords // Length 
-            self.col = self.coords % Width
-            if board[self.row][self.col] != -1:
-                board[self.row][self.col] = -1
+            col = random.randint(0 , Length-1)   
+            row = random.randint(0, Width-1)
+            if board[row][col] != -1:
+                board[row][col] = -1
                 self.bomb_planted+=1
-                self.get_num_neighboring_bomb(self.row,self.col)    
+                self.get_num_neighboring_bomb(row,col)    
 
 
     def get_num_neighboring_bomb(self,row,col):
@@ -55,11 +57,14 @@ class mine:
 
     def dig(self,row,col):
         dug.add((row, col))
-        visboard[row][col] = board[row][col]
         if board[row][col] == -1:
             print("YOU LOST :( !! ")
-            print(*board,sep = '\n')
+            for row2 in range(Width):
+                for col2 in range(Length):
+                    cover_field[row2][col2] = 1
+            self.draw()
             return False
+        
             
         elif board[row][col] == 0:
          for r in range(row-1,row+2):
@@ -67,28 +72,36 @@ class mine:
               if(-1<r<Width and -1<c<Length):
                 if (r, c) in dug or board[r][c] == -1:
                     continue 
-                visboard[r][c] = board[r][c]
+                self.opend = self.opend + 1
+                cover_field[r][c] = 1
                 self.dig(r, c)
+
+    
 
 
    
     def Window(self):
+        self.draw()
         q = 1
-        running = True
-        while running:  
-            for event in pygame.event.get():                                                 
-                if event.type == pygame.QUIT:    
-                    running = False 
-                if pygame.mouse.get_pressed()[0]:
-                    row,col = self.get_coords(pygame.mouse.get_pos())
-                    cover_field[row][col] = 1 
+        while self.opend != Width * Length - num_bombs:   
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: 
+                    pygame.quit()
+                    break                                         
                 if q == 1:
                     self.start_time = time.time()
                     q+=1
+                if pygame.mouse.get_pressed()[0]:  
+                    row,col = self.get_coords(pygame.mouse.get_pos())
+                    cover_field[row][col] = 1
+                    self.opend = self.opend + 1
+                    self.dig(row,col)
             self.draw()
 
 
-        pygame.quit()
+        print("GOOD GAME! YOU WON!")
+        self.time()
+
 
 
     def get_coords(self,mouse_pos):  # *
@@ -105,41 +118,33 @@ class mine:
                 if cover_field[i][j]==0:
                     pygame.draw.rect(window2 , white , (x2,y2,size,size))
                     pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
+
                 else:
                     pygame.draw.rect(window2 , color , (x2,y2,size,size))
                     pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
-                    if value == -1:
-                        text = NUM_FONT.render(str(value), True , green)
-                        center_x = x2 + size // 2
-                        center_y = y2 + size // 2
-                        window.blit(text, (center_x,center_y))
-                        # reveal board 
+                    text = NUM_FONT.render(str(value), True , blue)
+                    center_x = x2 + size // 2
+                    center_y = y2 + size // 2
+                    window.blit(text, (center_x,center_y))
 
-                    elif value >0:
-                        text = NUM_FONT.render(str(value), True , black)
-                        center_x = x2 + size // 2
-                        center_y = y2 + size // 2
-                        window.blit(text, (center_x,center_y))
-                    else:
-                        text = NUM_FONT.render(str(value), True , blue)
-                        center_x = x2 + size // 2
-                        center_y = y2 + size // 2
-                        window.blit(text, (center_x,center_y))
-                        #self.open_zero() + pygame.quit()
+
+
 
                   
         pygame.display.flip()
 
 
-    def time(self):                                               # after win:
+    def time(self):                                              
          current_time = time.time()
          elapsed_time = int(current_time - self.start_time)
          minutes = elapsed_time // 60
          seconds = elapsed_time % 60
-         print(minutes,seconds )
+         formatted_time = f"{minutes:02d}:{seconds:02d}"
+         print(formatted_time)
 
 
-    #def open_zero(self):
+
+
 
 
 
@@ -152,4 +157,3 @@ class mine:
 
 mine()
     
-
