@@ -8,7 +8,7 @@ Length = 30
 Width = 15
 length_window = 1200
 width_window = 600
-num_bombs = 10
+num_bombs = 50
 dug = set() 
 blue = (0, 0, 255)
 visboard = [['?' for i in range(Length)]for i in range(Width)]
@@ -87,7 +87,7 @@ class mine:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: 
                     pygame.quit()
-                    break                                         
+                    quit()                                  
                 if q == 1:
                     self.start_time = time.time()
                     q+=1
@@ -95,7 +95,11 @@ class mine:
                     row,col = self.get_coords(pygame.mouse.get_pos())
                     cover_field[row][col] = 1
                     self.opend = self.opend + 1
-                    self.dig(row,col)
+                    dig2 = self.dig(row,col)
+                    if dig2 == False:
+                        self.time()
+                        pygame.quit()
+                        quit()
             self.draw()
 
 
@@ -141,16 +145,6 @@ class mine:
          seconds = elapsed_time % 60
          formatted_time = f"{minutes:02d}:{seconds:02d}"
          print(formatted_time)
-
-
-
-
-
-
-
-
-
-
 
 
 
