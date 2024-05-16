@@ -1,21 +1,28 @@
 import random 
 import pygame
 import time 
+import os
+TILESIZE = 32
+tile_numbers = []
+for i in range(0, 9):
+    tile_numbers.append(pygame.transform.scale(pygame.image.load(os.path.join(f"Tile{i}.png")), (TILESIZE, TILESIZE)))
+
+tile_flag = pygame.transform.scale(pygame.image.load(os.path.join("TileFlag.png")), (TILESIZE, TILESIZE))
 
 
 pygame.font.init()
-Length = 30
-Width = 15
-length_window = 1200
-width_window = 600
-num_bombs = 50
+Length = 24
+Width = 20
+length_window = TILESIZE * Length
+width_window = TILESIZE *  Width
+num_bombs = 25
 dug = set() 
 blue = (0, 0, 255)
 visboard = [['?' for i in range(Length)]for i in range(Width)]
 cover_field = [[0 for i in range(Length)]for i in range(Width)]
 board = [[0 for q in range(Length)]for i in range(Width)] 
-size = length_window // Length
-NUM_FONT = pygame.font.SysFont('Ariel', 20)
+
+NUM_FONT = pygame.font.SysFont('Comic Sans MS', 22)
 red = (255, 0, 0)
 pygame.init()
 pygame.display.set_caption(" Minesweeper ") 
@@ -54,28 +61,37 @@ class mine:
 
 
 
+ 
+
+
+
+
+
+
 
     def dig(self,row,col):
-        dug.add((row, col))
-        if board[row][col] == -1:
-            print("YOU LOST :( !! ")
-            for row2 in range(Width):
-                for col2 in range(Length):
-                    cover_field[row2][col2] = 1
-            self.draw()
-            return False
-        
+        if cover_field[row][col] != 2:
+            dug.add((row, col))
+            if board[row][col] == -1:
+                print("YOU LOST :( !! ")
+                for row2 in range(Width):
+                    for col2 in range(Length):
+                        cover_field[row2][col2] = 1
+                self.draw()
+                return False
             
-        elif board[row][col] == 0:
-         for r in range(row-1,row+2):
-            for c in range(col-1,col+2):
-              if(-1<r<Width and -1<c<Length):
-                if (r, c) in dug or board[r][c] == -1:
-                    continue 
-                self.opend = self.opend + 1
-                cover_field[r][c] = 1
-                self.dig(r, c)
 
+
+            elif board[row][col] == 0:
+             if cover_field[row][col] != 2:
+                for r in range(row-1,row+2):
+                    for c in range(col-1,col+2):
+                        if(-1<r<Width and -1<c<Length):
+                            if (r, c) in dug or board[r][c] == -1 or cover_field[row][col] == 2:
+                                continue 
+                            self.opend = self.opend + 1
+                            cover_field[r][c] = 1
+                            self.dig(r, c)
     
 
 
@@ -93,13 +109,21 @@ class mine:
                     q+=1
                 if pygame.mouse.get_pressed()[0]:  
                     row,col = self.get_coords(pygame.mouse.get_pos())
-                    cover_field[row][col] = 1
-                    self.opend = self.opend + 1
-                    dig2 = self.dig(row,col)
-                    if dig2 == False:
-                        self.time()
-                        pygame.quit()
-                        quit()
+                    if cover_field[row][col] != 2 and cover_field[row][col] == 0:
+                        cover_field[row][col] = 1
+                        self.opend = self.opend + 1
+                        dig2 = self.dig(row,col)
+                        if dig2 == False:
+                            self.time()
+                            pygame.quit()
+                            quit()
+                if pygame.mouse.get_pressed()[2]: 
+                    row,col = self.get_coords(pygame.mouse.get_pos())
+                    if cover_field[row][col] == 0:
+                        cover_field[row][col] = 2
+                    elif cover_field[row][col] == 2:
+                        cover_field[row][col] = 0
+                        
             self.draw()
 
 
@@ -110,26 +134,49 @@ class mine:
 
     def get_coords(self,mouse_pos):  # *
         mx,my = mouse_pos
-        row = my//size
-        col = mx//size
+        row = my//TILESIZE
+        col = mx//TILESIZE
         return row,col 
     
     def draw(self):
         for i,row2 in enumerate(board):
-            y2 = size * i
+            y2 = TILESIZE * i
             for j, value in enumerate(row2):
-                x2 = size * j
+                x2 = TILESIZE * j
                 if cover_field[i][j]==0:
-                    pygame.draw.rect(window2 , white , (x2,y2,size,size))
-                    pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
+                    pygame.draw.rect(window2 , white , (x2,y2,TILESIZE,TILESIZE))
+                    pygame.draw.rect(window2 , black , (x2,y2,TILESIZE,TILESIZE),2)
 
-                else:
-                    pygame.draw.rect(window2 , color , (x2,y2,size,size))
-                    pygame.draw.rect(window2 , black , (x2,y2,size,size),2)
-                    text = NUM_FONT.render(str(value), True , blue)
-                    center_x = x2 + size // 2
-                    center_y = y2 + size // 2
+                elif cover_field[i][j] == 1:
+                    pygame.draw.rect(window2 , color , (x2,y2,TILESIZE,TILESIZE))
+                    pygame.draw.rect(window2 , black , (x2,y2,TILESIZE,TILESIZE),2)
+                    if value == 0:
+                        text = tile_numbers[0]
+                    if value == 1:
+                        text = tile_numbers[1]
+                    if value == 2:
+                        text = tile_numbers[2]
+                    if value == 3:
+                        text = tile_numbers[3]
+                    if value == 4:
+                        text = tile_numbers[4]
+                    if value == 5:
+                        text = tile_numbers[5]
+                    if value == 6:
+                        text = tile_numbers[6]
+                    if value == 7:
+                        text = tile_numbers[7]
+                    if value == 8:
+                        text = tile_numbers[8]
+                    
+            
+                    center_x = x2 + TILESIZE / 2 -15
+                    center_y = y2 + TILESIZE / 2 -15
                     window.blit(text, (center_x,center_y))
+                else:
+                    pygame.draw.rect(window2 , red , (x2,y2,TILESIZE,TILESIZE))
+                    pygame.draw.rect(window2 , black , (x2,y2,TILESIZE,TILESIZE),2)
+
 
 
 
@@ -145,6 +192,16 @@ class mine:
          seconds = elapsed_time % 60
          formatted_time = f"{minutes:02d}:{seconds:02d}"
          print(formatted_time)
+
+
+
+
+
+
+
+
+
+
 
 
 
