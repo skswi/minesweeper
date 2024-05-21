@@ -240,6 +240,17 @@ class mine:
          seconds = elapsed_time % 60
          formatted_time = f"{minutes:02d}:{seconds:02d}"
          return formatted_time
+   
+    import pygame 
+    #initialize pygame
+    pygame.init()
+    
+    pygame.music.load('music mp3')
+    
+    pygame.mixer.music.play(-1)
+    
+    while True:
+      pass
 
 
 
