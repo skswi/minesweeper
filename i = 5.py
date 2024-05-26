@@ -3,14 +3,27 @@ import pygame
 import time 
 from time import sleep
 import os
+
+
+
+
 TILESIZE = 32
+
+
+
+
+
 tile_numbers = []
-for i in range(0, 9):
+for i in range(0, 6):
+    tile_numbers.append(pygame.transform.scale(pygame.image.load(os.path.join(f"Tile{i}.jpeg")), (TILESIZE, TILESIZE)))
+for i in range(7,9):
     tile_numbers.append(pygame.transform.scale(pygame.image.load(os.path.join(f"Tile{i}.png")), (TILESIZE, TILESIZE)))
 
 
 playagain =  pygame.transform.scale(pygame.image.load(os.path.join("playagain.jpg")), (TILESIZE, TILESIZE))
 tile_flag = pygame.transform.scale(pygame.image.load(os.path.join("TileFlag.png")), (TILESIZE, TILESIZE))
+tile_mine = pygame.transform.scale(pygame.image.load(os.path.join("TileMine.png")), (TILESIZE, TILESIZE))
+won = pygame.transform.scale(pygame.image.load(os.path.join("won.jpg")), (TILESIZE, TILESIZE))
 
 
 pygame.font.init()
@@ -18,13 +31,14 @@ Length = 24
 Width = 20
 length_window = TILESIZE * Length
 width_window = TILESIZE *  Width
-num_bombs = 1
+num_bombs = 50
 blue = (0, 0, 255)
+
 
 FONT = pygame.font.SysFont('Comic Sans MS', 22)
 red = (255, 0, 0)
 pygame.init()
-pygame.display.set_caption(" Minesweeper ") 
+pygame.display.set_caption("Minesweeper ") 
 window = pygame.display.set_mode((length_window,width_window))
 pygame.display.flip()
 white = [255, 255, 255]
@@ -38,7 +52,6 @@ class mine:
     def __init__(self):
         self.i = 0
         self.opend = 0
-        self.dug = set() 
         self.board = [[0 for q in range(Length)]for i in range(Width)] 
         self.cover_field = [[0 for i in range(Length)]for i in range(Width)]
         self.bomb_planted = 0 
@@ -65,14 +78,16 @@ class mine:
 
     def dig(self,row,col):
         if self.cover_field[row][col] != 2:
-            self.dug.add((row, col))
             if self.board[row][col] == -1:
-                print("YOU LOST :( !! ")
                 for row2 in range(Width):
                     for col2 in range(Length):
                         self.cover_field[row2][col2] = 1
                 self.draw()
-                return False
+                sleep(1)
+                self.winorlose = "lose"
+                self.new_window()
+
+                
             
 
 
@@ -81,7 +96,7 @@ class mine:
                 for r in range(row-1,row+2):
                     for c in range(col-1,col+2):
                         if(-1<r<Width and -1<c<Length):
-                            if (r, c) in self.dug or self.board[r][c] == -1 or self.cover_field[row][col] == 2:
+                            if self.cover_field[r][c] == 1 or self.board[r][c] == -1 or self.cover_field[r][c] == 2:
                                 continue 
                             self.opend = self.opend + 1
                             self.cover_field[r][c] = 1
@@ -119,7 +134,7 @@ class mine:
                         self.cover_field[row][col] = 0
                         
             self.draw()
-        print("GOOD GAME! YOU WON!")
+        self.winorlose = "won"
         self.new_window()
 
 
@@ -142,10 +157,22 @@ class mine:
         window.blit(blurred_surface, (0, 0))
         small_font = pygame.font.Font(None, 40)
         time = self.time() 
+        large_font = pygame.font.Font(None, 50)
+        verylarge_font = pygame.font.Font(None, 75)
         text = small_font.render(time,False,black)
         center_x = width_window /2 +65
         center_y = length_window /2 -50
         window.blit(text, (center_x,center_y))
+        if self.winorlose == "won":
+            text = verylarge_font.render("You won",False,green)
+            center_x = length_window /2 -120
+            center_y = width_window /2 -180
+            window.blit(text, (center_x,center_y))
+        else:
+            text = verylarge_font.render("You lost",False,red)
+            center_x = length_window /2 -120
+            center_y = width_window /2 -160
+            window.blit(text, (center_x,center_y))
         text = small_font.render("time took:",False,black)
         center_x = width_window /2 -70
         center_y = length_window /2 -50
@@ -174,7 +201,7 @@ class mine:
 
 
 
-    def get_coords(self,mouse_pos):  # *
+    def get_coords(self,mouse_pos):  
         mx,my = mouse_pos
         row = my//TILESIZE
         col = mx//TILESIZE
@@ -210,6 +237,9 @@ class mine:
                         text = tile_numbers[7]
                     if value == 8:
                         text = tile_numbers[8]
+                    if value == -1:
+                        text = tile_mine
+                    
                     
             
                     center_x = x2 + TILESIZE / 2 -15
@@ -240,17 +270,6 @@ class mine:
          seconds = elapsed_time % 60
          formatted_time = f"{minutes:02d}:{seconds:02d}"
          return formatted_time
-   
-    import pygame 
-    #initialize pygame
-    pygame.init()
-    
-    pygame.music.load('music mp3')
-    
-    pygame.mixer.music.play(-1)
-    
-    while True:
-      pass
 
 
 
@@ -259,4 +278,4 @@ class mine:
 
 
 mine()
-    
+        
