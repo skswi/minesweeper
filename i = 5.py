@@ -177,16 +177,16 @@ class mine:
         center_x = width_window /2 -70
         center_y = length_window /2 -50
         window.blit(text, (center_x,center_y))
+        large_font = pygame.font.Font(None, 50)
+        text= large_font.render("click if you want to play again", True, black)
+        button_y = length_window /2 -85
+        button_x = width_window /2 -180
+        button_width = text.get_width() + 20
+        button_height = text.get_height() + 10
+        window.blit(text, (button_x,button_y))
+        pygame.display.flip()
         
         while self.i != 5:
-         large_font = pygame.font.Font(None, 50)
-         text= large_font.render("click if you want to play again", True, black)
-         button_y = length_window /2 -85
-         button_x = width_window /2 -180
-         button_width = text.get_width() + 20
-         button_height = text.get_height() + 10
-         window.blit(text, (button_x,button_y))
-         pygame.display.flip()
          for event in pygame.event.get():
             if event.type == pygame.QUIT:
              self.i=5
